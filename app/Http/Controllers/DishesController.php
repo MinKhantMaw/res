@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\DishRequest;
+use Illuminate\Support\Facades\Validator;
 
 class DishesController extends Controller
 {
@@ -15,6 +18,7 @@ class DishesController extends Controller
     public function index()
     {
         $dishes=Dish::all();
+        // return $dishes->categories->category_name;
         return view('kitchen.dish',compact('dishes'));
     }
 
@@ -25,7 +29,9 @@ class DishesController extends Controller
      */
     public function create()
     {
-        //
+        $category=Category::all();
+
+        return view('kitchen.create-dish',compact('category'));
     }
 
     /**
@@ -34,10 +40,18 @@ class DishesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+     public function store(DishRequest $request)
     {
-        //
+        $dish=new Dish();
+        $dish->name=$request->name;
+        $dish->category_id=$request->category;
+        $imageName=date('YmdHis'). "." .$request->image->getClientOriginalExtension();
+        $request->image->move(public_path('images'),$imageName);
+        $dish->image=$imageName;
+        $dish->save();
+        return redirect()->route('dishes.index')->with('success','Dish created successfully');
     }
+
 
     /**
      * Display the specified resource.
@@ -58,7 +72,9 @@ class DishesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $dish=Dish::find($id);
+        $category=Category::all();
+        return view('kitchen.edit',compact('dish','category'));
     }
 
     /**
@@ -68,9 +84,22 @@ class DishesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Dish $dish)
     {
-        //
+      request()->validate([
+        'name'=>'required',
+        'category'=>'required',
+      ]);
+      $dish->name=$request->name;
+      $dish->category_id=$request->category;
+      if ($request->image) {
+          $imageName=date('YmdHis'). "." .$request->image->getClientOriginalExtension();
+            $request->image->move(public_path('images'),$imageName);
+            $dish->image=$imageName;
+      }
+      $dish->save();
+      return redirect()->route('dishes.index')->with('success','Dish updated successfully');
+
     }
 
     /**
@@ -79,8 +108,9 @@ class DishesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Dish $dish)
     {
-        //
+       $dish->delete();
+         return redirect()->route('dishes.index')->with('success','Dish deleted successfully');
     }
 }

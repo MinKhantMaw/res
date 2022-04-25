@@ -8,7 +8,7 @@ use App\Http\Controllers\DishesController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes();
