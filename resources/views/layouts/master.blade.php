@@ -81,13 +81,13 @@
 
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('dishes.index') }}" class="nav-link active">
+                                    <a href="{{ route('dishes.index') }}" class="nav-link {{Request::segment(1) == 'dishes' ? 'active' : ''}}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Dishes</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('order') }}" class="nav-link">
+                                    <a href="{{ route('kitchen.order') }}" class="nav-link {{Request::segment(1) == 'order' ? 'active' : ''}}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Order</p>
                                     </a>

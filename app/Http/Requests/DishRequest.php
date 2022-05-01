@@ -24,8 +24,8 @@ class DishRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:10',
-            'category' => 'required|max:10',
+            'name' => 'required',
+            'category' => 'required',
             'image' => 'required|image',
         ];
     }
